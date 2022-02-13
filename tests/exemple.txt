@@ -1,0 +1,21 @@
+Voici un texte qui contient des étoiles  * simples ou doubles **
+ un underscore pour tester _ et même deux __
+et des retours à la lignes simples, 
+
+des lignes vides
+
+
+des listes à puces
+*  point1
+* point 2
+
+ des titres
+ ##    Titre1
+ ### Titre2
+ 
+  Et des textes incorrects
+ avec un caractère non autorisé #
+      ## une balise de titre incorrecte
+####et une autre
+ * un point de liste incorrect (espace devant)
+*et un autre (pas d'espace après)

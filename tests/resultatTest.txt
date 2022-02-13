@@ -1,0 +1,47 @@
+Etoile
+Retour à la ligne simple
+Etoile
+Etoile
+Etoile
+Retour à la ligne simple
+Underscore
+Retour à la ligne simple
+Underscore
+Underscore
+Underscore
+Ligne vide
+Etoile
+Ligne vide
+Balise de début de titre
+Ligne vide
+Balise de début de titre
+Etoile
+Ligne vide
+Point de liste
+Retour à la ligne simple
+Morceau de texte
+Retour à la ligne simple
+Morceau de texte
+Ligne vide
+Morceau de texte
+Caractère non autorisé
+Retour à la ligne simple
+Morceau de texte
+Retour à la ligne simple
+Morceau de texte
+Ligne vide
+Point de liste
+Morceau de texte
+Retour à la ligne simple
+Balise de début de titre
+Morceau de texte
+Retour à la ligne simple
+Etoile
+Etoile
+Morceau de texte
+Etoile
+Etoile
+Retour à la ligne simple
+Morceau de texte
+Retour à la ligne simple
+Morceau de texte

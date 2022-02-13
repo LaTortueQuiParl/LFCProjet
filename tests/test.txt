@@ -1,0 +1,27 @@
+*
+***
+_
+___
+
+*
+
+# 
+
+  #  *
+
+*  
+Texte
+Texte avec espace
+
+
+     
+
+Texte avec un caractère non autorisé #
+ Texte précédé par un espace
+    Texte avec beaucoup d'espace avant
+
+*  Texte
+ # Texte
+**Texte en gras**
+Texté (puis en parenthèse)
+Texte avec / et autre
