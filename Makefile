@@ -1,6 +1,6 @@
 CFLAGS= -lfl -o
 DEBUGFLAGS = -Wall
-SRC=etape2.lex
+SRC=etape2CORRIGE.lex
 OBJ=lex.yy.c
 BIN=analyseurProjet
 OUT=output.txt
