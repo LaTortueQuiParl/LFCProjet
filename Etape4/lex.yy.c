@@ -374,13 +374,13 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    5,    1,    1,    6,    1,    1,    1,    1,    1,
-        1,    7,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    5,    1,    6,    7,    1,    1,    1,    1,    1,
+        1,    8,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    8,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    6,    1,    1,    1,    1,    1,
 
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -408,11 +408,11 @@ static const YY_CHAR yy_meta[9] =
 
 static const flex_int16_t yy_base[49] =
     {   0,
-        0,    4,    9,    0,   11,   44,   50,    0,   14,   17,
-       46,   52,   52,   18,   20,   43,   24,   44,   27,   43,
+        0,    4,   10,    0,   12,   43,   50,    0,   15,   18,
+       46,   52,   52,   19,   22,   43,   27,   44,   30,   43,
        40,    0,    0,    0,   41,    0,    0,   38,    0,   37,
-       35,   35,    0,   36,    0,    0,    0,   35,    0,    0,
-       32,   31,   29,   28,   27,   13,   52,   16
+       34,   35,    0,   36,    0,    0,    0,   35,    0,    0,
+       32,   31,   21,   18,   12,   13,   52,    9
     } ;
 
 static const flex_int16_t yy_def[49] =
@@ -426,20 +426,20 @@ static const flex_int16_t yy_def[49] =
 
 static const flex_int16_t yy_nxt[61] =
     {   0,
-        8,    9,   10,   11,    9,   12,   13,   12,   14,   15,
-       16,   17,   18,   19,   20,   23,   22,   30,   23,   24,
-       25,   26,   28,   29,   30,   31,   33,   34,   35,   37,
-       38,   39,   46,   45,   44,   23,   41,   37,   33,   32,
+        8,    9,   10,   11,    9,   12,   12,   13,   14,   22,
+       15,   16,   17,   18,   19,   20,   23,   30,   46,   23,
+       24,   25,   26,   28,   45,   29,   30,   44,   31,   33,
+       34,   35,   37,   38,   39,   23,   41,   37,   33,   32,
        43,   30,   42,   24,   41,   40,   36,   32,   27,   47,
        21,    7,   47,   47,   47,   47,   47,   47,   47,   47
     } ;
 
 static const flex_int16_t yy_chk[61] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    2,    2,
-        2,    3,    3,    5,    5,    9,   48,   46,    9,   10,
-       10,   10,   14,   14,   15,   15,   17,   17,   17,   19,
-       19,   19,   45,   44,   43,   42,   41,   38,   34,   32,
+        1,    1,    1,    1,    1,    1,    1,    1,    2,   48,
+        2,    2,    3,    3,    5,    5,    9,   46,   45,    9,
+       10,   10,   10,   14,   44,   14,   15,   43,   15,   17,
+       17,   17,   19,   19,   19,   42,   41,   38,   34,   32,
        31,   30,   28,   25,   21,   20,   18,   16,   11,    7,
         6,   47,   47,   47,   47,   47,   47,   47,   47,   47
     } ;
@@ -463,9 +463,17 @@ char *yytext;
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
-#line 467 "lex.yy.c"
 
-#line 469 "lex.yy.c"
+    int pos[14][2];
+    char etat[14][100];
+    
+    int indiceLigne = 0;
+    int positionDebutMot = 0;
+    char etatActuel[20] = "Normal";
+
+#line 475 "lex.yy.c"
+
+#line 477 "lex.yy.c"
 
 #define INITIAL 0
 #define TITRE 1
@@ -687,9 +695,10 @@ YY_DECL
 		}
 
 	{
-#line 10 "etape4.lex"
+#line 18 "etape4.lex"
 
-#line 693 "lex.yy.c"
+
+#line 702 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -749,70 +758,76 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "etape4.lex"
+#line 20 "etape4.lex"
 ;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 12 "etape4.lex"
+#line 21 "etape4.lex"
 ;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 13 "etape4.lex"
+#line 22 "etape4.lex"
 ;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "etape4.lex"
+#line 24 "etape4.lex"
 {
     printf("Début de liste\n");
+ 
     BEGIN ITEM;
+    strcpy(etatActuel, "Item");
     return DEBLIST;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 20 "etape4.lex"
+#line 31 "etape4.lex"
 {
     printf("Item de liste\n");
+    strcpy(etatActuel, "Item");
     return ITEMLIST;
 }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 24 "etape4.lex"
+#line 36 "etape4.lex"
 {
     printf("Fin de liste\n");
     BEGIN INITIAL;
+    strcpy(etatActuel, "Normal");
     return FINLIST;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "etape4.lex"
+#line 43 "etape4.lex"
 {
     printf("Balise de titre\n");
     BEGIN TITRE;
+    strcpy(etatActuel, "Titre");
     return BALTIT;
 }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 35 "etape4.lex"
+#line 49 "etape4.lex"
 {
     printf("Fin de Titre\n");
     BEGIN INITIAL;
+    strcpy(etatActuel, "Normal");
     return FINTIT;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 41 "etape4.lex"
+#line 56 "etape4.lex"
 {
     printf("Etoile\n");
     return ETOILE;
@@ -820,9 +835,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 46 "etape4.lex"
+#line 61 "etape4.lex"
 {
     printf("Morceau de texte : %s\n", yytext);
+    pos[indiceLigne][0] = positionDebutMot;
+    positionDebutMot += yyleng-1;
+    pos[indiceLigne][1] = yyleng-1;
+    strcpy(etat[indiceLigne], etatActuel);
+    indiceLigne++;
+    strcpy(etat[indiceLigne], etat[indiceLigne-1]);
     strcpy(yylval.text, yytext);
     return TXT;
 }
@@ -830,7 +851,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 52 "etape4.lex"
+#line 73 "etape4.lex"
 {
     printf("Ligne vide\n");
     return LIGVID;
@@ -838,17 +859,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "etape4.lex"
+#line 78 "etape4.lex"
 {
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 60 "etape4.lex"
+#line 81 "etape4.lex"
 ECHO;
 	YY_BREAK
-#line 852 "lex.yy.c"
+#line 873 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(TITRE):
 case YY_STATE_EOF(ITEM):
@@ -1858,5 +1879,13 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 60 "etape4.lex"
+#line 81 "etape4.lex"
 
+yywrap(){
+
+    for(int i=0; i<14; i++){
+        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
+    }
+
+    return (1);
+}

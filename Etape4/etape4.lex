@@ -2,39 +2,54 @@
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
+
+    int pos[14][2];
+    char etat[14][100];
+    
+    int indiceLigne = 0;
+    int positionDebutMot = 0;
+    char etatActuel[20] = "Normal";
+
 %}
 
 %start TITRE
 %start ITEM
 
 %%
+
 (" "|\t)+ ;
 <ITEM>(\n|\r\n) ;
 <INITIAL>(\n|\r\n) ;
 
 <INITIAL>^"*"" "+ {
     printf("Début de liste\n");
+ 
     BEGIN ITEM;
+    strcpy(etatActuel, "Item");
     return DEBLIST;
 }
 <ITEM>^"*"" "+ {
     printf("Item de liste\n");
+    strcpy(etatActuel, "Item");
     return ITEMLIST;
 }
 <ITEM>(\n|\r\n)(" "*(\n|\r\n))+ {
     printf("Fin de liste\n");
     BEGIN INITIAL;
+    strcpy(etatActuel, "Normal");
     return FINLIST;
 }
 
 <INITIAL>^" "{0,3}"#"{1,6}" "+ {
     printf("Balise de titre\n");
     BEGIN TITRE;
+    strcpy(etatActuel, "Titre");
     return BALTIT;
 }
 <TITRE>(\n|\r\n)(" "*(\n|\r\n))* {
     printf("Fin de Titre\n");
     BEGIN INITIAL;
+    strcpy(etatActuel, "Normal");
     return FINTIT;
 }
 
@@ -43,8 +58,14 @@
     return ETOILE;
 }
 
-[^#*_\n]+ {
+[^#"_""*"\n]+ {
     printf("Morceau de texte : %s\n", yytext);
+    pos[indiceLigne][0] = positionDebutMot;
+    positionDebutMot += yyleng-1;
+    pos[indiceLigne][1] = yyleng-1;
+    strcpy(etat[indiceLigne], etatActuel);
+    indiceLigne++;
+    strcpy(etat[indiceLigne], etat[indiceLigne-1]);
     strcpy(yylval.text, yytext);
     return TXT;
 }
@@ -58,3 +79,11 @@
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
 }
 %%
+yywrap(){
+
+    for(int i=0; i<14; i++){
+        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
+    }
+
+    return (1);
+}

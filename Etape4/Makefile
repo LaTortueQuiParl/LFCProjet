@@ -20,8 +20,7 @@ lex: $(LEX)
 	@lex $^
 	@gcc -c lex.yy.c
 	@gcc lex.yy.o $(CFLAGS) $(LBIN)
-	@./$(LBIN) < test.txt > output.txt
-	@diff -y output.txt outlex.txt
+	@./$(LBIN) < test.txt
 
 clean:
 	rm $(OBJ) $(BIN)  lex.yy.c y.tab.h
