@@ -1,40 +1,27 @@
 CFLAGS= -lfl -o
 DEBUGFLAGS = -Wall
-SRC=etape2CORRIGE.lex
-OBJ=lex.yy.c
+LEX=etape4.lex
+OBJ=y.tab.c lex.yy.o
+YACC=etape4.yacc
 BIN=analyseurProjet
-OUT=output.txt
+LBIN=analyseurLex
 
 .PHONY: all fcheck
 
-all: $(SRC)
-	lex -v $^
-	gcc $(OBJ) $(DEBUGFLAGS) $(CFLAGS) $(BIN)
-	./$(BIN) $(BIN)
-
-finalCheck: $(SRC)
-	@lex $^
-	@gcc $(OBJ) -o analyseurProjet -lfl
-	@./$(BIN) < tests/exemple.txt > $(OUT)
-	@diff -q tests/resultat.txt $(OUT)
-
-dfc: $(SRC)
-	@lex $^
-	@gcc $(OBJ) -o analyseurProjet -lfl
-	@./$(BIN) < tests/exemple.txt > $(OUT)
-	@diff -y tests/resultat.txt $(OUT)
-
-debugCheck: $(SRC)
-	@lex -v $^
-	@gcc $(OBJ) $(DEBUGFLAGS) $(CFLAGS) $(BIN)
-	@./$(BIN) < tests/test.txt > $(OUT)
-	diff -y tests/resultatTest.txt $(OUT)
-
-check: $(SRC)
-	@lex $^
+all:
+	@yacc $(YACC)
+	@yacc -d $(YACC)
+	@lex $(LEX)
+	@gcc -c lex.yy.c
 	@gcc $(OBJ) $(CFLAGS) $(BIN)
-	@./$(BIN) < tests/test.txt > $(OUT)
-	diff -q tests/resultatTest.txt $(OUT)
+	./$(BIN) < test.txt
+
+lex: $(LEX)
+	@lex $^
+	@gcc -c lex.yy.c
+	@gcc lex.yy.o $(CFLAGS) $(LBIN)
+	@./$(LBIN) < test.txt > output.txt
+	@diff -y output.txt outlex.txt
 
 clean:
-	rm $(OBJ) $(OUT) $(BIN) 
+	rm $(OBJ) $(BIN)  lex.yy.c y.tab.h
