@@ -3,7 +3,8 @@
     #include <stdlib.h>
     #include <string.h>
     char tableau[1024];
-
+    char etat[14][100];
+    int pos[14][2];
     void yyerror(char* s);
     int yylex();
 %}
@@ -13,26 +14,26 @@
 }
 
 //Emplacement Tokens (%token)
-%token <text> TXT
-%token <text> BALTIT
-%token <text> FINTIT
-%token <text> LIGVID
-%token <text> DEBLIST
-%token <text> ITEMLIST
-%token <text> FINLIST
-%token <text> ETOILE
+%token TXT
+%token BALTIT
+%token FINTIT
+%token LIGVID
+%token DEBLIST
+%token ITEMLIST
+%token FINLIST
+%token ETOILE
 
 %start fichier
 
-%type <text> element
-%type <text> titre
-%type <text> liste
-%type <text> suite_liste
-%type <text> texte_formatte
-%type <text> liste_textes
-%type <text> gras
-%type <text> grasitalique
-%type <text> italique
+%type element
+%type titre
+%type liste
+%type suite_liste
+%type texte_formatte
+%type liste_textes
+%type gras
+%type grasitalique
+%type italique
 
 //Règles
 %%
@@ -70,7 +71,13 @@ int main(){
 
     yyparse();
 
-    //printf("tableau = %s\n", tableau);
+    printf("talbeau de symbole = \n");    
+    for(int i=0; i<14; i++){
+        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
+    }
+
+    printf("tableau = %s\n", tableau);
+
     return 0;
 }  
 

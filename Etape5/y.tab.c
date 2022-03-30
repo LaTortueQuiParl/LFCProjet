@@ -73,11 +73,12 @@
     #include <stdlib.h>
     #include <string.h>
     char tableau[1024];
-
+    char etat[14][100];
+    int pos[14][2];
     void yyerror(char* s);
     int yylex();
 
-#line 81 "y.tab.c"
+#line 82 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -150,11 +151,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 11 "etape5.yacc"
+#line 12 "etape5.yacc"
 
     char text[128];
 
-#line 158 "y.tab.c"
+#line 159 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -574,9 +575,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    39,    39,    40,    42,    43,    44,    45,    46,    48,
-      50,    52,    53,    55,    56,    57,    59,    60,    61,    62,
-      64,    65,    66
+       0,    40,    40,    41,    43,    44,    45,    46,    47,    49,
+      51,    53,    54,    56,    57,    58,    60,    61,    62,    63,
+      65,    66,    67
 };
 #endif
 
@@ -1170,7 +1171,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1174 "y.tab.c"
+#line 1175 "y.tab.c"
 
       default: break;
     }
@@ -1364,14 +1365,20 @@ yyreturn:
   return yyresult;
 }
 
-#line 67 "etape5.yacc"
+#line 68 "etape5.yacc"
 
 
 int main(){
 
     yyparse();
 
-    //printf("tableau = %s\n", tableau);
+    printf("talbeau de symbole = \n");    
+    for(int i=0; i<14; i++){
+        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
+    }
+
+    printf("tableau = %s\n", tableau);
+
     return 0;
 }  
 

@@ -3,9 +3,9 @@
     #include <string.h>
     #include "y.tab.h"
 
-    int pos[14][2];
+    extern int pos[14][2];
     extern char tableau[1024];
-    char etat[14][100];
+    extern char etat[14][100];
     
     int indiceLigne = 0;
     int positionDebutMot = 0;
@@ -60,7 +60,7 @@
 }
 
 
-([^#"_""*"\n]|(\\\*))+ {
+([^#"_""*"(\r\n)\n]|(\\\*))+ {
     printf("Morceau de texte : %s\n", yytext);
     strncat(tableau, yytext, yyleng);
     pos[indiceLigne][0] = positionDebutMot;
@@ -82,11 +82,3 @@
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
 }
 %%
-yywrap(){
-    printf("\n");    
-    for(int i=0; i<14; i++){
-        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
-    }
-    
-    return (1);
-}
