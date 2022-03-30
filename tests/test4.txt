@@ -11,5 +11,4 @@ puis un texte ** en gras **
 et un autre *** en gras italique ***
 
 ici un caractère interdit : _
-et ici un texte * syntaxiquement incorrect
-
+et ici un texte * synatxiquement incorrect

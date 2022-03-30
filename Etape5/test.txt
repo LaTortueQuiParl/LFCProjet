@@ -1,0 +1,4 @@
+le début
+une phrase \* avec un asterisque
+et une autre * avec une étoile *
+la fin

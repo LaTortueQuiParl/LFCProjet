@@ -1,26 +1,26 @@
 CFLAGS= -lfl -o
 DEBUGFLAGS = -Wall
-LEX=etape4.lex
+LEX=etape5.lex
 OBJ=y.tab.c lex.yy.o
-YACC=etape4.yacc
+YACC=etape5.yacc
 BIN=analyseurProjet
 LBIN=analyseurLex
 
 .PHONY: all fcheck
 
+
 all:
-	@yacc $(YACC)
 	@yacc -d $(YACC)
 	@lex $(LEX)
 	@gcc -c lex.yy.c
 	@gcc $(OBJ) $(CFLAGS) $(BIN)
 	./$(BIN) < test.txt
 
-lex: $(LEX)
-	@lex $^
+t:
+	lex tmp.lex
 	@gcc -c lex.yy.c
-	@gcc lex.yy.o $(CFLAGS) $(LBIN)
-	@./$(LBIN) < test.txt
+	@gcc lex.yy.o $(CFLAGS) $(BIN)
+	./$(BIN) < test.txt
 
 clean:
 	rm $(OBJ) $(BIN)  lex.yy.c y.tab.h

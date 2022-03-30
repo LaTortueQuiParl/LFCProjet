@@ -2,14 +2,14 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    char tableau[1024];
 
     void yyerror(char* s);
     int yylex();
-    char chaine[1024];
 %}
 
 %union {
-    char text[1024];
+    char text[128];
 }
 
 //Emplacement Tokens (%token)
@@ -39,13 +39,13 @@
     fichier : element ;
             | element fichier ;
 
-    element : TXT { strcpy(chaine, $1);}
+    element : TXT ;
             | LIGVID ;
             | titre ;
             | liste ;
-            | texte_formatte;
+            | texte_formatte ;
 
-    titre : BALTIT TXT FINTIT { strcpy(chaine, $2);}
+    titre : BALTIT TXT FINTIT ;
 
     liste : DEBLIST liste_textes suite_liste ;
 
@@ -56,31 +56,30 @@
                    | gras ;
                    | grasitalique ;
 
-    liste_textes : TXT { strcpy(chaine, $1);}
+    liste_textes : TXT ;
                  | texte_formatte ;
-                 | TXT liste_textes { strcpy(chaine, $1);}
+                 | TXT liste_textes ;
                  | texte_formatte liste_textes ;
 
-    italique : ETOILE TXT ETOILE { strcpy(chaine, $2);}
-    gras : ETOILE ETOILE TXT ETOILE ETOILE { strcpy(chaine, $3);}
-    grasitalique : ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE { strcpy(chaine, $4);}
+    italique : ETOILE TXT ETOILE ;
+    gras : ETOILE ETOILE TXT ETOILE ETOILE ;
+    grasitalique : ETOILE ETOILE ETOILE TXT ETOILE ETOILE ETOILE ;
 %%
 
 int main(){
 
     yyparse();
-    printf("\033[32;1mCH : %s\033[31;0m\n", chaine);
 
-    printf("\n");
-    yywrap();
-
+    //printf("tableau = %s\n", tableau);
     return 0;
 }  
 
 int yylex(YYSTYPE *, void *);
 
 void yyerror(char* s){
-    //printf("\033[32;1mchaine = %s\033[31;0m\n", chaine);
-    if (strcmp(s, "synthax error"))
-        printf("\n\033[31;1merreur synthaxique\033[0m\n", s);
+    if (strcmp(s, "synthax error")){
+        printf("\033[31;1m");
+        printf("\nerreur synthaxique\n", s);
+        printf("\033[31;0m");
+    }
 }

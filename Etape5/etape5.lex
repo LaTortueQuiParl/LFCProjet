@@ -4,6 +4,7 @@
     #include "y.tab.h"
 
     int pos[14][2];
+    extern char tableau[1024];
     char etat[14][100];
     
     int indiceLigne = 0;
@@ -53,16 +54,18 @@
     return FINTIT;
 }
 
-"*"	{
+"*"" "?	{
     printf("Etoile\n");
     return ETOILE;
 }
 
-[^#"_""*"\n]+ {
+
+([^#"_""*"\n]|(\\\*))+ {
     printf("Morceau de texte : %s\n", yytext);
+    strncat(tableau, yytext, yyleng);
     pos[indiceLigne][0] = positionDebutMot;
-    positionDebutMot += yyleng-1;
-    pos[indiceLigne][1] = yyleng-1;
+    positionDebutMot += yyleng;
+    pos[indiceLigne][1] = yyleng;
     strcpy(etat[indiceLigne], etatActuel);
     indiceLigne++;
     strcpy(etat[indiceLigne], etat[indiceLigne-1]);
@@ -80,10 +83,10 @@
 }
 %%
 yywrap(){
-
+    printf("\n");    
     for(int i=0; i<14; i++){
         printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
     }
-
+    
     return (1);
 }
