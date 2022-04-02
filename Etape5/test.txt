@@ -1,5 +1,5 @@
 le début
-une phrase \* avec un astérisque
-et une autre * avec une étoile *
-et un texte * en italique *
+une phrase \* avec un \ astérisque et un \*
+et une autre *avec une étoile*
+et un texte *en italique*
 la fin

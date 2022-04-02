@@ -471,9 +471,9 @@ char *yytext;
     #include <string.h>
     #include "y.tab.h"
 
-    extern int pos[14][2];
+    extern int pos[100][2];
     extern char tableau[1024];
-    extern char etat[14][100];
+    extern char etat[100][100];
     
     int indiceLigne = 0;
     int positionDebutMot = 0;
@@ -785,100 +785,128 @@ case 4:
 YY_RULE_SETUP
 #line 25 "etape5.lex"
 {
+
     printf("Début de liste\n");
- 
+
+    //Changement d'état : ITEM
     BEGIN ITEM;
     strcpy(etatActuel, "Item");
+
     return DEBLIST;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 32 "etape5.lex"
+#line 35 "etape5.lex"
 {
+
     printf("Item de liste\n");
     strcpy(etatActuel, "Item");
+
     return ITEMLIST;
 }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 37 "etape5.lex"
+#line 42 "etape5.lex"
 {
+
     printf("Fin de liste\n");
+
+    //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
+
     return FINLIST;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 44 "etape5.lex"
+#line 53 "etape5.lex"
 {
+
     printf("Balise de titre\n");
+
+    //Changement d'état : TITRE
     BEGIN TITRE;
     strcpy(etatActuel, "Titre");
+
     return BALTIT;
 }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 50 "etape5.lex"
+#line 63 "etape5.lex"
 {
+
     printf("Fin de Titre\n");
+
+    //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
+
     return FINTIT;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "etape5.lex"
+#line 74 "etape5.lex"
 {
+
     printf("Etoile\n");
+
     return ETOILE;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "etape5.lex"
+#line 82 "etape5.lex"
 {
+
+    //affichage du moceau de texte
     printf("Morceau de texte : %s\n", yytext);
+
+    //ajout du morceau de texte dans le tableau contenant tout le texte
     strncat(tableau, yytext, yyleng);
+
+    //mise à jour du tableau des symboles
     pos[indiceLigne][0] = positionDebutMot;
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
     strcpy(etat[indiceLigne], etatActuel);
     indiceLigne++;
     strcpy(etat[indiceLigne], etat[indiceLigne-1]);
-    strcpy(yylval.text, yytext);
+
     return TXT;
 }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 76 "etape5.lex"
+#line 101 "etape5.lex"
 {
+
     printf("Ligne vide\n");
+
     return LIGVID;
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 81 "etape5.lex"
+#line 108 "etape5.lex"
 {
+
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 84 "etape5.lex"
+#line 112 "etape5.lex"
 ECHO;
 	YY_BREAK
-#line 882 "lex.yy.c"
+#line 910 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(TITRE):
 case YY_STATE_EOF(ITEM):
@@ -1888,5 +1916,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 84 "etape5.lex"
+#line 112 "etape5.lex"
 

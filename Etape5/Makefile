@@ -14,7 +14,7 @@ all:
 	@lex $(LEX)
 	@gcc -c lex.yy.c
 	@gcc $(OBJ) $(CFLAGS) $(BIN)
-	./$(BIN) < test.txt
+	./$(BIN) < fichiertest.txt
 
 t:
 	lex tmp.lex
