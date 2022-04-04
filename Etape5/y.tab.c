@@ -73,15 +73,17 @@
     #include <string.h>
 
     char tableau[1024];
-    char etat[100][2][100];
+    char etat[100][3][100];
     int pos[100][2];
     int indiceLigne = 0;
 
     void yyerror(char* s);
     int yylex();
     void miseEnForme(char newMiseEnForme[100]);
+    void creationHTML();
+    void transformationHTML();
 
-#line 85 "y.tab.c"
+#line 87 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -524,9 +526,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    40,    40,    41,    43,    44,    45,    46,    47,    49,
-      51,    53,    54,    56,    57,    58,    60,    61,    62,    63,
-      65,    69,    73
+       0,    42,    42,    43,    45,    46,    47,    48,    49,    51,
+      53,    55,    56,    58,    59,    60,    62,    63,    64,    65,
+      67,    71,    75
 };
 #endif
 
@@ -1335,31 +1337,31 @@ yyreduce:
   switch (yyn)
     {
   case 20:
-#line 66 "etape5.yacc"
+#line 68 "etape5.yacc"
     {
         miseEnForme("italique");
     }
-#line 1343 "y.tab.c"
+#line 1345 "y.tab.c"
     break;
 
   case 21:
-#line 70 "etape5.yacc"
+#line 72 "etape5.yacc"
     {
         miseEnForme("gras");
     }
-#line 1351 "y.tab.c"
+#line 1353 "y.tab.c"
     break;
 
   case 22:
-#line 74 "etape5.yacc"
+#line 76 "etape5.yacc"
     {
         miseEnForme("gras+italique");
     }
-#line 1359 "y.tab.c"
+#line 1361 "y.tab.c"
     break;
 
 
-#line 1363 "y.tab.c"
+#line 1365 "y.tab.c"
 
       default: break;
     }
@@ -1591,7 +1593,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 77 "etape5.yacc"
+#line 79 "etape5.yacc"
 
 
 int main(){
@@ -1609,7 +1611,7 @@ int main(){
     //Affichage du tableau de symboles
     printf("talbeau de symbole = \n");
     for(int i=0; i<taillePosEtat; i++){
-        printf("%-8d|%-8d|%-8s|%-8s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1]);
+        printf("%-8d|%-8d|%-8s|%-8s|%-8s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
     }
     printf("\n");
     
@@ -1632,6 +1634,9 @@ int main(){
     //Affichage du contenu textuel du fichier source
     printf("tableau = %s\n", tableau);
 
+    creationHTML();
+    transformationHTML();
+
     return 0;
 }  
 
@@ -1646,7 +1651,82 @@ void yyerror(char* s){
 
     if (strcmp(s, "synthax error")){
         printf("\033[31;1m");
-        printf("\nerreur synthaxique\n", s);
+        printf("\nerreur synthaxique\n");
         printf("\033[31;0m");
     }
+}
+
+void creationHTML(){
+
+    if(remove("Result.html") == 0){
+        printf("Le fichier Result.html à été supprimé avec succès.\n");
+    }
+    else{
+        printf("Impossible de supprimer le fichier Result.html\n");
+    }
+    
+    FILE* fichier = NULL;
+
+    fichier = fopen("Result.html", "w");
+
+    if(fichier != NULL){
+
+        fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
+
+        fclose(fichier);
+    }
+}
+
+void transformationHTML(){
+
+    FILE* fichier = NULL;
+
+    fichier = fopen("Result.html", "r+");
+
+    //Calcul de la taille du tableau pos
+    int taillePosEtat = 0;
+    while(pos[taillePosEtat][1] != 0){
+        
+        taillePosEtat++;
+    }
+
+    if(fichier != NULL){
+
+        fseek(fichier, 231, SEEK_SET);
+
+        for(int i=0; i<taillePosEtat; i++){
+
+            int debutPhrase = pos[i][0];
+            int finPhrase = pos[i][0]+pos[i][1];
+
+            //strcmp c'est d'la merde, ça renvois 0 si c ok
+            if(!strcmp(etat[i][0], "Normal")){
+
+                fputs("\t<p>", fichier);
+                for(int j=debutPhrase; j<finPhrase; j++){
+                    fputc(tableau[j], fichier);
+                }
+                fputs("</p>\n", fichier);
+            }else if(!strcmp(etat[i][0], "Titre")){
+
+                fputs("\t<h1>", fichier);
+                for(int j=debutPhrase; j<finPhrase; j++){
+                    fputc(tableau[j], fichier);
+                }
+                fputs("</h1>\n", fichier);
+            }else if(!strcmp(etat[i][0], "Item")){
+
+                fputs("\t<ul>", fichier);
+                for(int j=debutPhrase; j<finPhrase; j++){
+                    fputc(tableau[j], fichier);
+                }
+                fputs("</ul>\n", fichier);
+            }
+        }
+
+
+        fputs("</body>\n</html>", fichier);
+        fclose(fichier);
+    }
+
 }
