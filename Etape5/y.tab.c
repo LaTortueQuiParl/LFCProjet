@@ -79,11 +79,16 @@
 
     void yyerror(char* s);
     int yylex();
+
+    //Modification du tableau synthaxique
     void miseEnForme(char newMiseEnForme[100]);
+    void organisationItem(char newOrgaItem[100]);
+
+    //Generation de l'HTML
     void creationHTML();
     void transformationHTML();
 
-#line 87 "y.tab.c"
+#line 92 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -526,9 +531,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    42,    42,    43,    45,    46,    47,    48,    49,    51,
-      53,    55,    56,    58,    59,    60,    62,    63,    64,    65,
-      67,    71,    75
+       0,    47,    47,    48,    50,    51,    52,    53,    54,    56,
+      58,    63,    67,    72,    73,    74,    76,    77,    78,    79,
+      81,    85,    89
 };
 #endif
 
@@ -1336,32 +1341,56 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 20:
+  case 10:
+#line 59 "etape5.yacc"
+    {
+        organisationItem("DebutListe");
+    }
+#line 1350 "y.tab.c"
+    break;
+
+  case 11:
+#line 64 "etape5.yacc"
+    {
+        organisationItem("ChangementItem");
+    }
+#line 1358 "y.tab.c"
+    break;
+
+  case 12:
 #line 68 "etape5.yacc"
+    {
+        organisationItem("FinListe");
+    }
+#line 1366 "y.tab.c"
+    break;
+
+  case 20:
+#line 82 "etape5.yacc"
     {
         miseEnForme("italique");
     }
-#line 1345 "y.tab.c"
+#line 1374 "y.tab.c"
     break;
 
   case 21:
-#line 72 "etape5.yacc"
+#line 86 "etape5.yacc"
     {
         miseEnForme("gras");
     }
-#line 1353 "y.tab.c"
+#line 1382 "y.tab.c"
     break;
 
   case 22:
-#line 76 "etape5.yacc"
+#line 90 "etape5.yacc"
     {
         miseEnForme("gras+italique");
     }
-#line 1361 "y.tab.c"
+#line 1390 "y.tab.c"
     break;
 
 
-#line 1365 "y.tab.c"
+#line 1394 "y.tab.c"
 
       default: break;
     }
@@ -1593,7 +1622,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 79 "etape5.yacc"
+#line 93 "etape5.yacc"
 
 
 int main(){
@@ -1643,6 +1672,11 @@ int main(){
 void miseEnForme(char newMiseEnForme[100]){
     //on modifie la valeur de mise en forme
         strcpy(etat[indiceLigne-1][1], newMiseEnForme);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
+}
+
+void organisationItem(char newOrgaItem[100]){
+    //on modifie la valeur de l'organisation des items dans une liste
+        strcpy(etat[indiceLigne-1][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
 }
 
 int yylex(YYSTYPE *, void *);
@@ -1703,24 +1737,60 @@ void transformationHTML(){
             if(!strcmp(etat[i][0], "Normal")){
 
                 fputs("\t<p>", fichier);
+
                 for(int j=debutPhrase; j<finPhrase; j++){
+
                     fputc(tableau[j], fichier);
                 }
                 fputs("</p>\n", fichier);
+
             }else if(!strcmp(etat[i][0], "Titre")){
 
                 fputs("\t<h1>", fichier);
+
                 for(int j=debutPhrase; j<finPhrase; j++){
+
                     fputc(tableau[j], fichier);
                 }
                 fputs("</h1>\n", fichier);
+
             }else if(!strcmp(etat[i][0], "Item")){
 
-                fputs("\t<ul>", fichier);
-                for(int j=debutPhrase; j<finPhrase; j++){
-                    fputc(tableau[j], fichier);
+                if(i>0){
+
+                    if(strcmp(etat[i-1][0], "Item")){
+
+                        fputs("\t<ul>\n", fichier);
+                    }
+                    fputs("\t\t<li>", fichier);
+
+                        for(int j=debutPhrase; j<finPhrase; j++){
+
+                            fputc(tableau[j], fichier);
+                        }
+                    fputs("</li>\n", fichier);
+
+                    if(strcmp(etat[i+1][0], "Item")){
+
+                        fputs("\t</ul>\n", fichier);
+                    }
+
+                }else{
+
+                    fputs("\t<ul>", fichier);
+                    fputs("\t\t<li>", fichier);
+
+                        for(int j=debutPhrase; j<finPhrase; j++){
+
+                            fputc(tableau[j], fichier);
+                        }
+                    fputs("</li>\n", fichier);
+
+                    if(strcmp(etat[i+1][0], "Item")){
+
+                        fputs("\t</ul>\n", fichier);
+                    }
                 }
-                fputs("</ul>\n", fichier);
             }
         }
 

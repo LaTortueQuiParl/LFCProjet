@@ -10,9 +10,6 @@
 
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
-    char itemActuel[20] = "none";
-    int numItem = 0;
-    int subItem = 0;
 
 %}
 
@@ -33,34 +30,12 @@
     BEGIN ITEM;
     strcpy(etatActuel, "Item");
 
-    //gere les debuts de liste et le premier item
-    numItem++;
-    subItem = 0;
-    subItem++;
-    char str[2] = "";
-    char str2[2] = "";
-    char test[20] = "Item : ";
-    char point[20] = ".";
-    sprintf(str, "%d", numItem);
-    sprintf(str2, "%d", subItem);
-    strcpy(itemActuel, strcat(test, strcat(str, strcat(point, str2))));
-
     return DEBLIST;
 }
 <ITEM>^"*"" "+ {
 
     printf("Item de liste\n");
     strcpy(etatActuel, "Item");
-
-    //indique dans quel liste on est et le numero de l'item
-    subItem++;
-    char str[2] = "";
-    char str2[2] = "";
-    char test[20] = "Item : ";
-    char point[20] = ".";
-    sprintf(str, "%d", numItem);
-    sprintf(str2, "%d", subItem);
-    strcpy(itemActuel, strcat(test, strcat(str, strcat(point, str2))));
 
     return ITEMLIST;
 }
@@ -71,7 +46,6 @@
     //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
-    strcpy(itemActuel, "none");
 
     return FINLIST;
 }
@@ -118,7 +92,6 @@
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
     strcpy(etat[indiceLigne][0], etatActuel);
-    strcpy(etat[indiceLigne][2], itemActuel);
     indiceLigne++;
     strcpy(etat[indiceLigne][0], etat[indiceLigne-1][0]);
 

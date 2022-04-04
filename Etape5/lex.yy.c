@@ -478,13 +478,10 @@ char *yytext;
 
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
-    char itemActuel[20] = "none";
-    int numItem = 0;
-    int subItem = 0;
 
-#line 486 "lex.yy.c"
+#line 483 "lex.yy.c"
 
-#line 488 "lex.yy.c"
+#line 485 "lex.yy.c"
 
 #define INITIAL 0
 #define TITRE 1
@@ -706,10 +703,10 @@ YY_DECL
 		}
 
 	{
-#line 22 "etape5.lex"
+#line 19 "etape5.lex"
 
 
-#line 713 "lex.yy.c"
+#line 710 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -769,24 +766,24 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 24 "etape5.lex"
+#line 21 "etape5.lex"
 ;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 25 "etape5.lex"
+#line 22 "etape5.lex"
 ;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 26 "etape5.lex"
+#line 23 "etape5.lex"
 ;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "etape5.lex"
+#line 25 "etape5.lex"
 {
 
     printf("Début de liste\n");
@@ -795,38 +792,16 @@ YY_RULE_SETUP
     BEGIN ITEM;
     strcpy(etatActuel, "Item");
 
-    //gere les debuts de liste et le premier item
-    numItem++;
-    subItem = 0;
-    subItem++;
-    char str[2] = "";
-    char str2[2] = "";
-    char test[20] = "Item : ";
-    char point[20] = ".";
-    sprintf(str, "%d", numItem);
-    sprintf(str2, "%d", subItem);
-    strcpy(itemActuel, strcat(test, strcat(str, strcat(point, str2))));
-
     return DEBLIST;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 50 "etape5.lex"
+#line 35 "etape5.lex"
 {
 
     printf("Item de liste\n");
     strcpy(etatActuel, "Item");
-
-    //indique dans quel liste on est et le numero de l'item
-    subItem++;
-    char str[2] = "";
-    char str2[2] = "";
-    char test[20] = "Item : ";
-    char point[20] = ".";
-    sprintf(str, "%d", numItem);
-    sprintf(str2, "%d", subItem);
-    strcpy(itemActuel, strcat(test, strcat(str, strcat(point, str2))));
 
     return ITEMLIST;
 }
@@ -834,7 +809,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 67 "etape5.lex"
+#line 42 "etape5.lex"
 {
 
     printf("Fin de liste\n");
@@ -842,14 +817,13 @@ YY_RULE_SETUP
     //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
-    strcpy(itemActuel, "none");
 
     return FINLIST;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 79 "etape5.lex"
+#line 53 "etape5.lex"
 {
 
     printf("Balise de titre\n");
@@ -864,7 +838,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 89 "etape5.lex"
+#line 63 "etape5.lex"
 {
 
     printf("Fin de Titre\n");
@@ -878,7 +852,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 100 "etape5.lex"
+#line 74 "etape5.lex"
 {
 
     printf("Etoile\n");
@@ -888,7 +862,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 108 "etape5.lex"
+#line 82 "etape5.lex"
 {
 
     //affichage du moceau de texte
@@ -902,7 +876,6 @@ YY_RULE_SETUP
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
     strcpy(etat[indiceLigne][0], etatActuel);
-    strcpy(etat[indiceLigne][2], itemActuel);
     indiceLigne++;
     strcpy(etat[indiceLigne][0], etat[indiceLigne-1][0]);
 
@@ -912,7 +885,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 128 "etape5.lex"
+#line 101 "etape5.lex"
 {
 
     printf("Ligne vide\n");
@@ -922,7 +895,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 135 "etape5.lex"
+#line 108 "etape5.lex"
 {
 
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
@@ -930,10 +903,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 139 "etape5.lex"
+#line 112 "etape5.lex"
 ECHO;
 	YY_BREAK
-#line 937 "lex.yy.c"
+#line 910 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(TITRE):
 case YY_STATE_EOF(ITEM):
@@ -1943,5 +1916,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 139 "etape5.lex"
+#line 112 "etape5.lex"
 

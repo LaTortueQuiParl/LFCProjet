@@ -10,7 +10,12 @@
 
     void yyerror(char* s);
     int yylex();
+
+    //Modification du tableau synthaxique
     void miseEnForme(char newMiseEnForme[100]);
+    void organisationItem(char newOrgaItem[100]);
+
+    //Generation de l'HTML
     void creationHTML();
     void transformationHTML();
 %}
@@ -50,10 +55,19 @@
 
     titre : BALTIT TXT FINTIT ;
 
-    liste : DEBLIST liste_textes suite_liste ;
+    liste : DEBLIST liste_textes suite_liste
+    {
+        organisationItem("DebutListe");
+    }
 
-    suite_liste : ITEMLIST liste_textes suite_liste ;
-                | FINLIST ;
+    suite_liste : ITEMLIST liste_textes suite_liste
+    {
+        organisationItem("ChangementItem");
+    }
+                | FINLIST
+    {
+        organisationItem("FinListe");
+    }
 
     texte_formatte : italique ;
                    | gras ;
@@ -127,6 +141,11 @@ void miseEnForme(char newMiseEnForme[100]){
         strcpy(etat[indiceLigne-1][1], newMiseEnForme);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
 }
 
+void organisationItem(char newOrgaItem[100]){
+    //on modifie la valeur de l'organisation des items dans une liste
+        strcpy(etat[indiceLigne-1][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
+}
+
 int yylex(YYSTYPE *, void *);
 
 void yyerror(char* s){
@@ -185,24 +204,60 @@ void transformationHTML(){
             if(!strcmp(etat[i][0], "Normal")){
 
                 fputs("\t<p>", fichier);
+
                 for(int j=debutPhrase; j<finPhrase; j++){
+
                     fputc(tableau[j], fichier);
                 }
                 fputs("</p>\n", fichier);
+
             }else if(!strcmp(etat[i][0], "Titre")){
 
                 fputs("\t<h1>", fichier);
+
                 for(int j=debutPhrase; j<finPhrase; j++){
+
                     fputc(tableau[j], fichier);
                 }
                 fputs("</h1>\n", fichier);
+
             }else if(!strcmp(etat[i][0], "Item")){
 
-                fputs("\t<ul>", fichier);
-                for(int j=debutPhrase; j<finPhrase; j++){
-                    fputc(tableau[j], fichier);
+                if(i>0){
+
+                    if(strcmp(etat[i-1][0], "Item")){
+
+                        fputs("\t<ul>\n", fichier);
+                    }
+                    fputs("\t\t<li>", fichier);
+
+                        for(int j=debutPhrase; j<finPhrase; j++){
+
+                            fputc(tableau[j], fichier);
+                        }
+                    fputs("</li>\n", fichier);
+
+                    if(strcmp(etat[i+1][0], "Item")){
+
+                        fputs("\t</ul>\n", fichier);
+                    }
+
+                }else{
+
+                    fputs("\t<ul>", fichier);
+                    fputs("\t\t<li>", fichier);
+
+                        for(int j=debutPhrase; j<finPhrase; j++){
+
+                            fputc(tableau[j], fichier);
+                        }
+                    fputs("</li>\n", fichier);
+
+                    if(strcmp(etat[i+1][0], "Item")){
+
+                        fputs("\t</ul>\n", fichier);
+                    }
                 }
-                fputs("</ul>\n", fichier);
             }
         }
 
