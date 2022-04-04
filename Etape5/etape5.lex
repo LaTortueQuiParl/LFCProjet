@@ -5,9 +5,9 @@
 
     extern int pos[100][2];
     extern char tableau[1024];
-    extern char etat[100][100];
-    
-    int indiceLigne = 0;
+    extern char etat[100][2][100];
+    extern int indiceLigne;
+
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
 
@@ -91,9 +91,9 @@
     pos[indiceLigne][0] = positionDebutMot;
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
-    strcpy(etat[indiceLigne], etatActuel);
+    strcpy(etat[indiceLigne][0], etatActuel);
     indiceLigne++;
-    strcpy(etat[indiceLigne], etat[indiceLigne-1]);
+    strcpy(etat[indiceLigne][0], etat[indiceLigne-1][0]);
 
     return TXT;
 }

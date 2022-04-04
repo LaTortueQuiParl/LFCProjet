@@ -73,13 +73,15 @@
     #include <string.h>
 
     char tableau[1024];
-    char etat[100][100];
+    char etat[100][2][100];
     int pos[100][2];
+    int indiceLigne = 0;
 
     void yyerror(char* s);
     int yylex();
+    void miseEnForme(char newMiseEnForme[100]);
 
-#line 83 "y.tab.c"
+#line 85 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -522,9 +524,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    38,    38,    39,    41,    42,    43,    44,    45,    47,
-      49,    51,    52,    54,    55,    56,    58,    59,    60,    61,
-      63,    64,    65
+       0,    40,    40,    41,    43,    44,    45,    46,    47,    49,
+      51,    53,    54,    56,    57,    58,    60,    61,    62,    63,
+      65,    69,    73
 };
 #endif
 
@@ -1332,8 +1334,32 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 20:
+#line 66 "etape5.yacc"
+    {
+        miseEnForme("italique");
+    }
+#line 1343 "y.tab.c"
+    break;
 
-#line 1337 "y.tab.c"
+  case 21:
+#line 70 "etape5.yacc"
+    {
+        miseEnForme("gras");
+    }
+#line 1351 "y.tab.c"
+    break;
+
+  case 22:
+#line 74 "etape5.yacc"
+    {
+        miseEnForme("gras+italique");
+    }
+#line 1359 "y.tab.c"
+    break;
+
+
+#line 1363 "y.tab.c"
 
       default: break;
     }
@@ -1565,7 +1591,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 66 "etape5.yacc"
+#line 77 "etape5.yacc"
 
 
 int main(){
@@ -1583,8 +1609,9 @@ int main(){
     //Affichage du tableau de symboles
     printf("talbeau de symbole = \n");
     for(int i=0; i<taillePosEtat; i++){
-        printf("%-8d|%-8d|%-8s|\n", pos[i][0], pos[i][1], etat[i]);
+        printf("%-8d|%-8d|%-8s|%-8s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1]);
     }
+    printf("\n");
     
     /*Calcul nombre element dans tableau*/
     int tailletableau = 0;
@@ -1607,6 +1634,11 @@ int main(){
 
     return 0;
 }  
+
+void miseEnForme(char newMiseEnForme[100]){
+    //on modifie la valeur de mise en forme
+        strcpy(etat[indiceLigne-1][1], newMiseEnForme);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
+}
 
 int yylex(YYSTYPE *, void *);
 
