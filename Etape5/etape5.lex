@@ -11,6 +11,8 @@
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
 
+    
+    void organisationItem(char newOrgaItem[100], int ligne);
 %}
 
 %start TITRE
@@ -29,6 +31,7 @@
     //Changement d'état : ITEM
     BEGIN ITEM;
     strcpy(etatActuel, "Item");
+    organisationItem("DebutListe", indiceLigne);
 
     return DEBLIST;
 }
@@ -36,12 +39,15 @@
 
     printf("Item de liste\n");
     strcpy(etatActuel, "Item");
+    organisationItem("ChangementItem", indiceLigne);
 
     return ITEMLIST;
 }
 <ITEM>(\n|\r\n)(" "*(\n|\r\n))+ {
 
     printf("Fin de liste\n");
+    
+    organisationItem("FinListe", indiceLigne-1);
 
     //Changement d'état : INITIAL
     BEGIN INITIAL;
@@ -110,3 +116,8 @@
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
 }
 %%
+
+void organisationItem(char newOrgaItem[100], int ligne){
+    //on modifie la valeur de l'organisation des items dans une liste
+        strcpy(etat[ligne][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
+}

@@ -13,7 +13,6 @@
 
     //Modification du tableau synthaxique
     void miseEnForme(char newMiseEnForme[100]);
-    void organisationItem(char newOrgaItem[100]);
 
     //Generation de l'HTML
     void creationHTML();
@@ -55,19 +54,10 @@
 
     titre : BALTIT TXT FINTIT ;
 
-    liste : DEBLIST liste_textes suite_liste
-    {
-        organisationItem("DebutListe");
-    }
+    liste : DEBLIST liste_textes suite_liste ;
 
-    suite_liste : ITEMLIST liste_textes suite_liste
-    {
-        organisationItem("ChangementItem");
-    }
-                | FINLIST
-    {
-        organisationItem("FinListe");
-    }
+    suite_liste : ITEMLIST liste_textes suite_liste ;
+                | FINLIST ;
 
     texte_formatte : italique ;
                    | gras ;
@@ -107,7 +97,7 @@ int main(){
     //Affichage du tableau de symboles
     printf("talbeau de symbole = \n");
     for(int i=0; i<taillePosEtat; i++){
-        printf("%-8d|%-8d|%-8s|%-8s|%-8s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
+        printf("%-8d|%-8d|%-8s|%-15s|%-15s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
     }
     printf("\n");
     
@@ -141,11 +131,6 @@ void miseEnForme(char newMiseEnForme[100]){
         strcpy(etat[indiceLigne-1][1], newMiseEnForme);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
 }
 
-void organisationItem(char newOrgaItem[100]){
-    //on modifie la valeur de l'organisation des items dans une liste
-        strcpy(etat[indiceLigne-1][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
-}
-
 int yylex(YYSTYPE *, void *);
 
 void yyerror(char* s){
@@ -172,7 +157,7 @@ void creationHTML(){
 
     if(fichier != NULL){
 
-        fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
+        fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
 
         fclose(fichier);
     }
@@ -193,7 +178,7 @@ void transformationHTML(){
 
     if(fichier != NULL){
 
-        fseek(fichier, 231, SEEK_SET);
+        fseek(fichier, 0, SEEK_END);
 
         for(int i=0; i<taillePosEtat; i++){
 

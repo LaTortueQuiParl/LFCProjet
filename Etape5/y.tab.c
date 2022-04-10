@@ -82,13 +82,12 @@
 
     //Modification du tableau synthaxique
     void miseEnForme(char newMiseEnForme[100]);
-    void organisationItem(char newOrgaItem[100]);
 
     //Generation de l'HTML
     void creationHTML();
     void transformationHTML();
 
-#line 92 "y.tab.c"
+#line 91 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -531,9 +530,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    47,    47,    48,    50,    51,    52,    53,    54,    56,
-      58,    63,    67,    72,    73,    74,    76,    77,    78,    79,
-      81,    85,    89
+       0,    46,    46,    47,    49,    50,    51,    52,    53,    55,
+      57,    59,    60,    62,    63,    64,    66,    67,    68,    69,
+      71,    75,    79
 };
 #endif
 
@@ -1341,56 +1340,32 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 10:
-#line 59 "etape5.yacc"
-    {
-        organisationItem("DebutListe");
-    }
-#line 1350 "y.tab.c"
-    break;
-
-  case 11:
-#line 64 "etape5.yacc"
-    {
-        organisationItem("ChangementItem");
-    }
-#line 1358 "y.tab.c"
-    break;
-
-  case 12:
-#line 68 "etape5.yacc"
-    {
-        organisationItem("FinListe");
-    }
-#line 1366 "y.tab.c"
-    break;
-
   case 20:
-#line 82 "etape5.yacc"
+#line 72 "etape5.yacc"
     {
         miseEnForme("italique");
     }
-#line 1374 "y.tab.c"
+#line 1349 "y.tab.c"
     break;
 
   case 21:
-#line 86 "etape5.yacc"
+#line 76 "etape5.yacc"
     {
         miseEnForme("gras");
     }
-#line 1382 "y.tab.c"
+#line 1357 "y.tab.c"
     break;
 
   case 22:
-#line 90 "etape5.yacc"
+#line 80 "etape5.yacc"
     {
         miseEnForme("gras+italique");
     }
-#line 1390 "y.tab.c"
+#line 1365 "y.tab.c"
     break;
 
 
-#line 1394 "y.tab.c"
+#line 1369 "y.tab.c"
 
       default: break;
     }
@@ -1622,7 +1597,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 93 "etape5.yacc"
+#line 83 "etape5.yacc"
 
 
 int main(){
@@ -1640,7 +1615,7 @@ int main(){
     //Affichage du tableau de symboles
     printf("talbeau de symbole = \n");
     for(int i=0; i<taillePosEtat; i++){
-        printf("%-8d|%-8d|%-8s|%-8s|%-8s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
+        printf("%-8d|%-8d|%-8s|%-15s|%-15s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
     }
     printf("\n");
     
@@ -1674,11 +1649,6 @@ void miseEnForme(char newMiseEnForme[100]){
         strcpy(etat[indiceLigne-1][1], newMiseEnForme);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
 }
 
-void organisationItem(char newOrgaItem[100]){
-    //on modifie la valeur de l'organisation des items dans une liste
-        strcpy(etat[indiceLigne-1][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
-}
-
 int yylex(YYSTYPE *, void *);
 
 void yyerror(char* s){
@@ -1705,7 +1675,7 @@ void creationHTML(){
 
     if(fichier != NULL){
 
-        fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
+        fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
 
         fclose(fichier);
     }
@@ -1726,7 +1696,7 @@ void transformationHTML(){
 
     if(fichier != NULL){
 
-        fseek(fichier, 231, SEEK_SET);
+        fseek(fichier, 0, SEEK_END);
 
         for(int i=0; i<taillePosEtat; i++){
 
