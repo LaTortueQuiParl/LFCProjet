@@ -1,0 +1,27 @@
+Le tableau de symbole comporte 7 colonnes,
+La première colonne représente la début d'un morceau de texte,
+La deuxième colonne représente le nombre de caractères de ce morceau de texte,
+La troisième colonne indique si le texte fait partie d'un titre, d'une liste où d'un paragraphe.
+La quatrième colonne indique le type de formatage du texte,
+La cinquième colonne indique quelle partie d'une liste appartient le morceaux de texte,
+La sixième colonne indique le niveau de titre,
+La septième colonne indique à quel paragraphe appartient le morceau de texte (uniquement utilisé dans un texte "Normal")
+
+On commence par l'analyse lexicale pour remplir le tableau qui est utilisé après l'analyse synthaxique pour le traduire en html.
+On parcours le tableau pour pouvoir créer les bonnes balises, selon l'état et type de formatage dans lequel on se trouve
+
+Si on est dans l'état normal, il faut vérifier si on sort d'une liste auquel cas on ferme les balises et aussi on vérifie dans quel paragraphe on se situe
+on vérifie les type de formats de texte pour mettre les balises avec le texte et on regarde sur la prochaine ligne si il faut fermer la balise de paragraphe
+
+Pour le titre, il faut vérifier si l'on est dans une liste pour fermer les balises si nécessaire.
+
+Pour la liste si on est en début de liste, il faut vérifier que l'on est pas dans le premier élément, auquel cas il faut savoir si le dernier texte était un item, pour fermer la liste précédente.
+Si on est en changementItem ou en fin de liste, il faut simplement écrire le texte
+Il faut aussi vérifier que le prochain élément est un ChangmeentItem pour fermer l'item de liste(li)
+
+
+Nous avions un soucis de reconnaissance au niveaux des liste et des texte en italique : 
+si nous commençons une ligne avec une étoile suivis d'un espace, nous reconnaissons directement un item d'une liste.
+en revanche si nous commençons une ligne avec une étoile suivis directement d'un texte (sans espace derriere donc) nous le reconnaissons comme une étoile et non un item de liste.
+Le probleme est qu'un morceau de texte en italique peut etre précédé d'une étoile suivit d'un espace : "*"" "?
+cela pourrait poser probleme lors de la reconnaissance du lex.

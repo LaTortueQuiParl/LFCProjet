@@ -465,23 +465,25 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "etape5.lex"
-#line 2 "etape5.lex"
+#line 1 "compilMK.lex"
+#line 2 "compilMK.lex"
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
 
-    extern int pos[100][2];
+    extern int pos[100][3];
     extern char tableau[1024];
-    extern char etat[100][100];
-    
-    int indiceLigne = 0;
+    extern char etat[100][4][100];
+    extern int indiceLigne;
+    extern int indiceParagraphe;
+
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
-
-#line 483 "lex.yy.c"
-
+    
+    void organisationItem(char newOrgaItem[100], int ligne);
 #line 485 "lex.yy.c"
+
+#line 487 "lex.yy.c"
 
 #define INITIAL 0
 #define TITRE 1
@@ -703,10 +705,10 @@ YY_DECL
 		}
 
 	{
-#line 19 "etape5.lex"
+#line 21 "compilMK.lex"
 
 
-#line 710 "lex.yy.c"
+#line 712 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -766,24 +768,24 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 21 "etape5.lex"
+#line 23 "compilMK.lex"
 ;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 22 "etape5.lex"
+#line 24 "compilMK.lex"
 ;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 23 "etape5.lex"
+#line 25 "compilMK.lex"
 ;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 25 "etape5.lex"
+#line 27 "compilMK.lex"
 {
 
     printf("Début de liste\n");
@@ -791,17 +793,21 @@ YY_RULE_SETUP
     //Changement d'état : ITEM
     BEGIN ITEM;
     strcpy(etatActuel, "Item");
+    organisationItem("DebutListe", indiceLigne);
+
+    indiceParagraphe++;
 
     return DEBLIST;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 35 "etape5.lex"
+#line 40 "compilMK.lex"
 {
 
     printf("Item de liste\n");
     strcpy(etatActuel, "Item");
+    organisationItem("ChangementItem", indiceLigne);
 
     return ITEMLIST;
 }
@@ -809,28 +815,43 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 42 "etape5.lex"
+#line 48 "compilMK.lex"
 {
 
     printf("Fin de liste\n");
+    
+    organisationItem("FinListe", indiceLigne);
 
     //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
+
+    indiceParagraphe++;
 
     return FINLIST;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 53 "etape5.lex"
+#line 63 "compilMK.lex"
 {
 
     printf("Balise de titre\n");
 
+    //reconnaissance du niveau de titre
+    int nivTitre = 0;
+    for(int i=0; i<yyleng; i++){
+        if(yytext[i] == '#'){
+            nivTitre++;
+        }
+    }
+    sprintf(etat[indiceLigne][3], "%d", nivTitre);
+
     //Changement d'état : TITRE
     BEGIN TITRE;
     strcpy(etatActuel, "Titre");
+
+    indiceParagraphe++;
 
     return BALTIT;
 }
@@ -838,7 +859,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 63 "etape5.lex"
+#line 84 "compilMK.lex"
 {
 
     printf("Fin de Titre\n");
@@ -852,7 +873,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 74 "etape5.lex"
+#line 95 "compilMK.lex"
 {
 
     printf("Etoile\n");
@@ -862,7 +883,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 82 "etape5.lex"
+#line 103 "compilMK.lex"
 {
 
     //affichage du moceau de texte
@@ -875,9 +896,11 @@ YY_RULE_SETUP
     pos[indiceLigne][0] = positionDebutMot;
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
-    strcpy(etat[indiceLigne], etatActuel);
+    pos[indiceLigne][2] = indiceParagraphe;
+
+    strcpy(etat[indiceLigne][0], etatActuel);
     indiceLigne++;
-    strcpy(etat[indiceLigne], etat[indiceLigne-1]);
+    strcpy(etat[indiceLigne][0], etat[indiceLigne-1][0]);
 
     return TXT;
 }
@@ -885,17 +908,18 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 101 "etape5.lex"
+#line 124 "compilMK.lex"
 {
 
     printf("Ligne vide\n");
 
+    indiceParagraphe++;
     return LIGVID;
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 108 "etape5.lex"
+#line 132 "compilMK.lex"
 {
 
     printf("Erreur lexicale : Caractère %s non autorisé\n", yytext);
@@ -903,10 +927,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 112 "etape5.lex"
+#line 136 "compilMK.lex"
 ECHO;
 	YY_BREAK
-#line 910 "lex.yy.c"
+#line 934 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(TITRE):
 case YY_STATE_EOF(ITEM):
@@ -1916,5 +1940,10 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 112 "etape5.lex"
+#line 136 "compilMK.lex"
 
+
+void organisationItem(char newOrgaItem[100], int ligne){
+    //on modifie la valeur de l'organisation des items dans une liste
+        strcpy(etat[ligne][2], newOrgaItem);//[indiceLigne -1] car on incrémente indiceLigne (dans le lex) avant d'envoyer les infos au yacc
+}
