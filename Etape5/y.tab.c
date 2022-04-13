@@ -66,16 +66,17 @@
 
 
 /* First part of user prologue.  */
-#line 1 "etape5.yacc"
+#line 1 "compilMK.yacc"
 
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
 
     char tableau[1024];
-    char etat[100][3][100];
-    int pos[100][2];
+    char etat[100][4][100];
+    int pos[100][3];
     int indiceLigne = 0;
+    int indiceParagraphe = 0;
 
     void yyerror(char* s);
     int yylex();
@@ -83,11 +84,23 @@
     //Modification du tableau synthaxique
     void miseEnForme(char newMiseEnForme[100]);
 
+    void affichInformations();
+    int calcElements();
+
     //Generation de l'HTML
     void creationHTML();
     void transformationHTML();
 
-#line 91 "y.tab.c"
+    //ecriture HTML
+    void ecriture(FILE* fichier, int debutPhrase, int finPhrase);
+    void ecritureNormal(FILE* fichier, int i, int debutPhrase, int finPhrase);
+    void ecritureTitre(FILE* fichier, int i, int debutPhrase, int finPhrase);
+    void ecritureListe(FILE* fichier, int i, int debutPhrase, int finPhrase);
+    void ecritureGras(FILE* fichier, int debutPhrase, int finPhrase);
+    void ecritureItalique(FILE* fichier, int debutPhrase, int finPhrase);
+    void ecritureGrasItalique(FILE* fichier, int debutPhrase, int finPhrase);
+
+#line 104 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -530,9 +543,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    46,    46,    47,    49,    50,    51,    52,    53,    55,
-      57,    59,    60,    62,    63,    64,    66,    67,    68,    69,
-      71,    75,    79
+       0,    59,    59,    60,    62,    63,    64,    65,    66,    68,
+      70,    72,    73,    75,    76,    77,    79,    80,    81,    82,
+      84,    88,    92
 };
 #endif
 
@@ -1341,31 +1354,31 @@ yyreduce:
   switch (yyn)
     {
   case 20:
-#line 72 "etape5.yacc"
+#line 85 "compilMK.yacc"
     {
         miseEnForme("italique");
     }
-#line 1349 "y.tab.c"
+#line 1362 "y.tab.c"
     break;
 
   case 21:
-#line 76 "etape5.yacc"
+#line 89 "compilMK.yacc"
     {
         miseEnForme("gras");
     }
-#line 1357 "y.tab.c"
+#line 1370 "y.tab.c"
     break;
 
   case 22:
-#line 80 "etape5.yacc"
+#line 93 "compilMK.yacc"
     {
         miseEnForme("gras+italique");
     }
-#line 1365 "y.tab.c"
+#line 1378 "y.tab.c"
     break;
 
 
-#line 1369 "y.tab.c"
+#line 1382 "y.tab.c"
 
       default: break;
     }
@@ -1597,46 +1610,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 83 "etape5.yacc"
+#line 96 "compilMK.yacc"
 
 
 int main(){
 
     yyparse();
 
-    /*Calcul nombre element dans pos*/
-    int taillePosEtat = 0;
-    while(pos[taillePosEtat][1] != 0){
-        
-        taillePosEtat++;
-    }
-
-
-    //Affichage du tableau de symboles
-    printf("talbeau de symbole = \n");
-    for(int i=0; i<taillePosEtat; i++){
-        printf("%-8d|%-8d|%-8s|%-15s|%-15s|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2]);
-    }
-    printf("\n");
-    
-    /*Calcul nombre element dans tableau*/
-    int tailletableau = 0;
-    while(tableau[tailletableau] != '\0'){
-
-        tailletableau++;
-    }
-
-    /*Enlève les \ situés avant les * dans le texte*/
-    for(int i=0; i<tailletableau-1; i++){
-        if(tableau[i] == '\\' && tableau[i+1] == '*'){
-            for(int j=i; j<tailletableau-1; j++){
-                tableau[j] = tableau[j+1];
-            }
-        }
-    }
-
-    //Affichage du contenu textuel du fichier source
-    printf("tableau = %s\n", tableau);
+    affichInformations();
 
     creationHTML();
     transformationHTML();
@@ -1675,10 +1656,44 @@ void creationHTML(){
 
     if(fichier != NULL){
 
+        //entête fichier html
         fputs("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<title>Document</title>\n</head>\n<body>\n", fichier);
 
         fclose(fichier);
     }
+}
+
+void affichInformations(){
+
+    int taillePosEtat = calcElements();
+
+
+    //Affichage du tableau de symboles
+    printf("talbeau de symbole = \n");
+    for(int i=0; i<taillePosEtat; i++){
+        printf("%-8d|%-8d|%-8s|%-15s|%-15s|%-2s|%-2d|\n", pos[i][0], pos[i][1], etat[i][0], etat[i][1], etat[i][2], etat[i][3], pos[i][2]);
+    }
+    printf("\n");
+    
+    /*Calcul nombre element dans tableau*/
+    int tailletableau = 0;
+    while(tableau[tailletableau] != '\0'){
+
+        tailletableau++;
+    }
+
+    //Affichage du contenu textuel du fichier source
+    printf("tableau = %s\n", tableau);
+}
+
+int calcElements(){
+    //Calcul de la taille du tableau pos
+    int taillePosEtat = 0;
+    while(pos[taillePosEtat][1] != 0){
+        
+        taillePosEtat++;
+    }
+    return taillePosEtat;
 }
 
 void transformationHTML(){
@@ -1687,12 +1702,7 @@ void transformationHTML(){
 
     fichier = fopen("Result.html", "r+");
 
-    //Calcul de la taille du tableau pos
-    int taillePosEtat = 0;
-    while(pos[taillePosEtat][1] != 0){
-        
-        taillePosEtat++;
-    }
+    int taillePosEtat = calcElements();
 
     if(fichier != NULL){
 
@@ -1704,69 +1714,143 @@ void transformationHTML(){
             int finPhrase = pos[i][0]+pos[i][1];
 
             //strcmp c'est d'la merde, ça renvois 0 si c ok
+            //on verifie si on est dans l'etat Normal
             if(!strcmp(etat[i][0], "Normal")){
+                ecritureNormal(fichier, i, debutPhrase, finPhrase);
 
-                fputs("\t<p>", fichier);
-
-                for(int j=debutPhrase; j<finPhrase; j++){
-
-                    fputc(tableau[j], fichier);
-                }
-                fputs("</p>\n", fichier);
-
+            //on verifie si on est dans l'état Titre
             }else if(!strcmp(etat[i][0], "Titre")){
+                ecritureTitre(fichier, i, debutPhrase, finPhrase);
 
-                fputs("\t<h1>", fichier);
-
-                for(int j=debutPhrase; j<finPhrase; j++){
-
-                    fputc(tableau[j], fichier);
-                }
-                fputs("</h1>\n", fichier);
-
+            //On vérifie si on est dans l'état Item
             }else if(!strcmp(etat[i][0], "Item")){
-
-                if(i>0){
-
-                    if(strcmp(etat[i-1][0], "Item")){
-
-                        fputs("\t<ul>\n", fichier);
-                    }
-                    fputs("\t\t<li>", fichier);
-
-                        for(int j=debutPhrase; j<finPhrase; j++){
-
-                            fputc(tableau[j], fichier);
-                        }
-                    fputs("</li>\n", fichier);
-
-                    if(strcmp(etat[i+1][0], "Item")){
-
-                        fputs("\t</ul>\n", fichier);
-                    }
-
-                }else{
-
-                    fputs("\t<ul>", fichier);
-                    fputs("\t\t<li>", fichier);
-
-                        for(int j=debutPhrase; j<finPhrase; j++){
-
-                            fputc(tableau[j], fichier);
-                        }
-                    fputs("</li>\n", fichier);
-
-                    if(strcmp(etat[i+1][0], "Item")){
-
-                        fputs("\t</ul>\n", fichier);
-                    }
-                }
+                ecritureListe(fichier, i, debutPhrase, finPhrase);
             }
         }
-
 
         fputs("</body>\n</html>", fichier);
         fclose(fichier);
     }
 
+}
+
+void ecritureNormal(FILE* fichier, int i, int debutPhrase, int finPhrase){
+    
+    //On vérifie si on sort d'une liste ou non
+    if(!strcmp(etat[i][2], "FinListe")){
+
+        fputs("</li>\n", fichier);
+        fputs("\t</ul>\n", fichier);
+    }
+    
+    //On vérifie dans quel paragraphe on se situe
+    if(i != 0){
+        if(strcmp(etat[i-1][0], "Normal")){
+            fputs("\t<p>", fichier);
+        }else{
+            if(pos[i-1][2] != pos[i][2]){
+                fputs("\t<p>", fichier);
+            }
+        }
+    }else{
+        fputs("\t<p>", fichier);
+    }
+
+    //On vérifie le type d'écriture
+    if(!strcmp(etat[i][1], "italique")){
+        ecritureItalique(fichier, debutPhrase, finPhrase);
+    }else if(!strcmp(etat[i][1], "gras")){
+        ecritureGras(fichier, debutPhrase, finPhrase);
+    }else if(!strcmp(etat[i][1], "gras+italique")){
+        ecritureGrasItalique(fichier, debutPhrase, finPhrase);
+    }else{
+        ecriture(fichier, debutPhrase, finPhrase);
+    }
+
+    //On ferme le paraghaphe si on change de paragraphe derriere
+    if(pos[i+1][2] != pos[i][2] || strcmp(etat[i+1][0], etat[i][0])){
+        fputs("</p>\n", fichier);
+    }
+}
+
+void ecritureTitre(FILE* fichier, int i, int debutPhrase, int finPhrase){
+    if(!strcmp(etat[i][2], "FinListe")){
+
+        fputs("</li>\n", fichier);
+        fputs("\t</ul>\n", fichier);
+    }
+
+    fprintf(fichier, "\t<h%s>", etat[i][3]);
+
+    ecriture(fichier, debutPhrase, finPhrase);
+
+    fprintf(fichier, "</h%s>\n", etat[i][3]);
+}
+
+void ecritureListe(FILE* fichier, int i, int debutPhrase, int finPhrase){
+    if(!strcmp(etat[i][2], "DebutListe")){
+        if(i != 0){
+            if(!strcmp(etat[i-1][0], "Item")){
+                fputs("</li>\n\t</ul>\n", fichier);
+            }
+                        
+        }
+        fputs("\t<ul>\n", fichier);
+        fputs("\t\t<li>", fichier);
+    }
+
+    if(!strcmp(etat[i][2], "ChangementItem")){
+        fputs("\t\t<li>", fichier);
+    }
+
+    if(!strcmp(etat[i][1], "italique")){
+        ecritureItalique(fichier, debutPhrase, finPhrase);
+    }else if(!strcmp(etat[i][1], "gras")){
+        ecritureGras(fichier, debutPhrase, finPhrase);
+    }else if(!strcmp(etat[i][1], "gras+italique")){
+        ecritureGrasItalique(fichier, debutPhrase, finPhrase);
+    }else{
+        ecriture(fichier, debutPhrase, finPhrase);
+    }
+                
+    if(!strcmp(etat[i+1][2], "ChangementItem")){
+        fputs("</li>\n", fichier);
+    }
+
+    if(!strcmp(etat[i][2], "FinListe")){
+
+        fputs("</li>\n", fichier);
+        fputs("\t</ul>\n", fichier);
+    }
+}
+
+void ecritureGras(FILE* fichier, int debutPhrase, int finPhrase){
+    fputs("<b>", fichier);
+    ecriture(fichier, debutPhrase, finPhrase);
+    fputs("</b>", fichier);
+}
+
+void ecritureItalique(FILE* fichier, int debutPhrase, int finPhrase){
+    fputs("<i>", fichier);
+    ecriture(fichier, debutPhrase, finPhrase);
+    fputs("</i>", fichier);
+}
+
+void ecritureGrasItalique(FILE* fichier, int debutPhrase, int finPhrase){
+    fputs("<b><i>", fichier);
+    ecriture(fichier, debutPhrase, finPhrase);
+    fputs("</b></i>", fichier);
+}
+
+void ecriture(FILE* fichier, int debutPhrase, int finPhrase){
+
+    for(int j=debutPhrase; j<finPhrase; j++){
+
+        //Si on rencontre un '\*', on ignore le '\'
+        if(tableau[j] == '\\' && tableau[j+1] == '*'){
+            j++;
+        }
+        
+        fputc(tableau[j], fichier);
+    }
 }

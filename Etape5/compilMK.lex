@@ -1,16 +1,25 @@
+/*==============================================================================
+Projet Compilateur lex/yacc fait par :
+Yann MOURELON
+Daniel PINSON
+
+participation étape 5 :
+Ilyas TAHIR
+==============================================================================*/
+
 %{
     #include <stdio.h>
     #include <string.h>
     #include "y.tab.h"
 
-    extern int pos[100][2];
+    extern int pos[100][3];
     extern char tableau[1024];
-    extern char etat[100][3][100];
+    extern char etat[100][4][100];
     extern int indiceLigne;
+    extern int indiceParagraphe;
 
     int positionDebutMot = 0;
     char etatActuel[20] = "Normal";
-
     
     void organisationItem(char newOrgaItem[100], int ligne);
 %}
@@ -33,6 +42,8 @@
     strcpy(etatActuel, "Item");
     organisationItem("DebutListe", indiceLigne);
 
+    indiceParagraphe++;
+
     return DEBLIST;
 }
 <ITEM>^"*"" "+ {
@@ -47,11 +58,13 @@
 
     printf("Fin de liste\n");
     
-    organisationItem("FinListe", indiceLigne-1);
+    organisationItem("FinListe", indiceLigne);
 
     //Changement d'état : INITIAL
     BEGIN INITIAL;
     strcpy(etatActuel, "Normal");
+
+    indiceParagraphe++;
 
     return FINLIST;
 }
@@ -60,9 +73,20 @@
 
     printf("Balise de titre\n");
 
+    //reconnaissance du niveau de titre
+    int nivTitre = 0;
+    for(int i=0; i<yyleng; i++){
+        if(yytext[i] == '#'){
+            nivTitre++;
+        }
+    }
+    sprintf(etat[indiceLigne][3], "%d", nivTitre);
+
     //Changement d'état : TITRE
     BEGIN TITRE;
     strcpy(etatActuel, "Titre");
+
+    indiceParagraphe++;
 
     return BALTIT;
 }
@@ -97,6 +121,8 @@
     pos[indiceLigne][0] = positionDebutMot;
     positionDebutMot += yyleng;
     pos[indiceLigne][1] = yyleng;
+    pos[indiceLigne][2] = indiceParagraphe;
+
     strcpy(etat[indiceLigne][0], etatActuel);
     indiceLigne++;
     strcpy(etat[indiceLigne][0], etat[indiceLigne-1][0]);
@@ -108,6 +134,7 @@
 
     printf("Ligne vide\n");
 
+    indiceParagraphe++;
     return LIGVID;
 }
 

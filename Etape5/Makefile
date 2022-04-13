@@ -1,8 +1,8 @@
 CFLAGS= -lfl -o
 DEBUGFLAGS = -Wall
-LEX=etape5.lex
+LEX=compilMK.lex
 OBJ=y.tab.c lex.yy.o
-YACC=etape5.yacc
+YACC=compilMK.yacc
 BIN=analyseurProjet
 LBIN=analyseurLex
 
@@ -14,13 +14,13 @@ all:
 	@lex $(LEX)
 	@gcc -c lex.yy.c
 	@gcc $(OBJ) $(CFLAGS) $(BIN)
-	./$(BIN) < fichiertest.txt
+	./$(BIN) < fichier.md
 
 t:
 	lex tmp.lex
 	@gcc -c lex.yy.c
 	@gcc lex.yy.o $(CFLAGS) $(BIN)
-	./$(BIN) < test.txt
+	./$(BIN) < fichier.md
 
 clean:
 	rm $(OBJ) $(BIN)  lex.yy.c y.tab.h
